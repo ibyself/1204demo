@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>扇形导航</title>
+		<style>
+			*{
+				margin: 0;
+				padding:0;
+				list-style: none;
+				text-decoration:none;
+			}
+			.box{
+				position: fixed;
+				right:0;
+				bottom:0;
+				width:49px;
+				height:49px;
+			}
+			.home{
+				position: absolute;
+				width:49px;
+				height:49px;
+				background: url(img/home.png) no-repeat;
+				border-radius:50%;
+				z-index: 5;
+				transition: 2s;
+				
+			}
+			.list li{
+				position:absolute;
+				left:0;
+				top:0;
+			}
+			.list li img{
+				border-radius:50%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box">
+			<div class="home" id='home'></div>
+			<ul class="list" id="list">
+				<li><a href="javascript:;"><img src="img/clos.png" ></a></li>
+				<li><a href="javascript:;"><img src="img/full.png" ></a></li>
+				<li><a href="javascript:;"><img src="img/open.png" ></a></li>
+				<li><a href="javascript:;"><img src="img/prev.png" ></a></li>
+				<li><a href="javascript:;"><img src="img/refresh.png" ></a></li>
+			</ul>
+		</div>
+		<script>
+			window.onload=function(){
+				var home=document.getElementById('home');
+				var lists=document.querySelectorAll('#list li');
+				var flag=true;
+				var c=200;
+				home.onclick=function(){
+					home.style.transform='rotate(-360deg)';
+					if(flag){
+						for (var i = 0; i < lists.length; i++) {
+							lists[i].style.left=-getPoint(c,90/(lists.length-1)*i).left+'px';
+							lists[i].style.top=-getPoint(c,90/(lists.length-1)*i).top+'px';
+							lists[i].style.transform='rotate(-720deg)';
+							lists[i].style.transition='2s '+0.1*i+'s';
+						}
+						
+					}else{
+						home.style.transform='rotate(0deg)';
+						for (var i = 0; i < lists.length; i++) {
+							lists[i].style.left='0px';
+							lists[i].style.top='0px';
+							lists[i].style.transform='rotate(0deg)';
+							lists[i].style.transition='2s '+0.1*(lists.length-1-i)+'s';
+						}
+					}
+					flag=!flag;
+				}
+				function getPoint(c,deg){
+					var left=c*Math.sin(deg*Math.PI/180);
+					var top=c*Math.cos(deg*Math.PI/180);
+					return {left:left,top:top};
+				}
+				for (var i = 0; i < lists.length; i++) {
+					lists[i].onclick=function(){
+						this.style.transform='rotate(-720deg) scale(1.5)';
+						this.style.opacity='.3';
+						this.style.transition='3s';
+						this.addEventListener('transitionend',fn);
+					}
+				}
+				function fn(){
+					this.style.transform='rotate(-720deg) scale(1)';
+					this.style.opacity='1';
+					this.style.transition='0s';
+					this.removeEventListener('transitionend',fn);
+				}
+			}
+		</script>
+	</body>
+</html>
